@@ -1,0 +1,70 @@
+#!/bin/sh
+qqwry_dat_url="http://update.cz88.net/soft/setup.zip";
+qqwry_dat_local_path="/usr/local/share/QQWry.Dat"
+curl=`which curl`
+wget=`which wget`
+
+
+workdir="/tmp/QQWry/"
+zipname="QQWry.setup.zip"
+
+neededcommands=""
+
+if ! type "curl" &> /dev/null; then
+  neededcommands="$neededcommands curl"
+fi
+if ! type "date" &> /dev/null; then
+  neededcommands="$neededcommands date"
+fi
+if ! type "sed" &> /dev/null; then
+  neededcommands="$neededcommands sed"
+fi
+if ! type "grep" &> /dev/null; then
+  neededcommands="$neededcommands grep"
+fi
+if ! type "wc" &> /dev/null; then
+  neededcommands="$neededcommands wc"
+fi
+if ! type "unzip" &> /dev/null; then
+  neededcommands="$neededcommands unzip"
+fi
+if ! type "innoextract" &> /dev/null; then
+  neededcommands="$neededcommands innoextract"
+fi
+
+if [ "$neededcommands" !=  "" ]; then
+	echo "$neededcommands not found, please install!"
+	exit 0;
+fi
+
+ismodified=`curl -s -I --header "If-Modified-Since: \`date -R  -u -r /usr/local/share/QQWry.Dat | sed 's/+0000/GMT/'\`" http://update.cz88.net/soft/setup.zip | grep "HTTP/1.1 304 Not Modified" | wc -l`
+if [ $ismodified = 1 ] ; then echo "No update needed" && exit 0; fi
+
+#todo, Find the right way to check the file is outdated or not
+
+echo "Update needed"
+
+
+if ! test -w $qqwry_dat_local_path
+then
+    echo can not write to $qqwry_dat_local_path
+    exit 1
+fi
+
+mkdir $workdir
+
+command="$curl -k --compressed $qqwry_dat_url -o ${workdir}${zipname}"
+
+echo Updating $qqwry_dat_local_path
+
+$command
+
+unzip -q -u  ${workdir}${zipname} -d ${workdir}
+innoextract -e ${workdir}setup.exe -d ${workdir}
+cp ${workdir}app/qqwry.dat $qqwry_dat_local_path
+
+#clean
+rm -r ${workdir}
+
+ls -alh "$qqwry_dat_local_path"
+exit 0
