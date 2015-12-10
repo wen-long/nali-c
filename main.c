@@ -122,8 +122,8 @@ int main(int argc, const char * argv[]) {
             }
             break;
         case 2:
-            processOneLine(inputString, result);
-            printf("%s", result);
+            processOneLine(argv[1], result);
+            printf("%s\n", result);
             break;
         default:
             printf("Usage:\n1)    # nali 8.8.8.8\n2)    # nali\n      > 8.8.8.8\n");
