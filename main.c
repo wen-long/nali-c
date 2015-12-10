@@ -112,36 +112,14 @@ int main(int argc, const char * argv[]) {
     char inputString[BUFSIZ] = {0};
     char result[BUFSIZ] = {0};
     
-    char bigbuffer[BUFSIZ*BUFSIZ] = {0};
-    //I dont know how huch is enough...
     size_t pos = 0, i = 0;
-    int isAtty = isatty(STDIN_FILENO);
     switch (argc) {
         case 1:
-            if (isAtty) {
-                while (fgets(inputString, BUFSIZ, stdin) != NULL) {
-                    memset(result, 0, BUFSIZ);
-                    processOneLine(inputString, result);
-                    write(STDOUT_FILENO, result, strlen(result));
-                }
-
-            } else {
-                while (fgets(inputString, BUFSIZ, stdin) != NULL) {
-                    memset(result, 0, BUFSIZ);
-                    processOneLine(inputString, result);
-                    char *p = result;
-                    while ( p[i] ) {
-                        bigbuffer[pos] = p[i];
-                        i++;
-                        pos++;
-                    }
-                    p++;
-                    i = 0;
-                }
-                puts(bigbuffer);
-                //these can be super fast used in pipe but little annoying when interact in console (have to input EOF, *nix is Ctrl+D),or you can use above write function or fputs;
+            while (fgets(inputString, BUFSIZ, stdin) != NULL) {
+                memset(result, 0, BUFSIZ);
+                processOneLine(inputString, result);
+                write(STDOUT_FILENO, result, strlen(result));
             }
-            
             break;
         case 2:
             processOneLine(inputString, result);
