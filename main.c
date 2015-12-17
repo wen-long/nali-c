@@ -52,7 +52,7 @@ void locationStringForIPString (const char *ipCstring, char *result) {
         strcat(result, g_output);
     }
     if (strlen(result) == 0) {
-        strcat(result, "未找到");
+        strcat(result, "[未找到");
     }
     strcat(result, "]");
     return;
@@ -83,8 +83,8 @@ void processOneLine(const char *input, char *result) {
                     strncpy(ipstring, p + m[0].rm_so, m[0].rm_eo - m[0].rm_so + 1);
                     locationStringForIPString(ipstring, location);
                     strcat(result + strlen(result), location);
+                    lastpos = m[0].rm_eo + ( p - input );
                 }
-                lastpos = m[0].rm_eo;
             }
             p += m[0].rm_eo;
         }
