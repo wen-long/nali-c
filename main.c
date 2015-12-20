@@ -48,6 +48,7 @@ void locationStringForIPString (const char *ipCstring, char *result) {
         char *p = g_area;
         size_t bufsize = BUFSIZ;
         iconv(cd, &p, &inbytesleft, &outbuf, &bufsize);
+        *outbuf = '\0';
         strcat(result, " ");
         strcat(result, g_output);
     }
