@@ -13,7 +13,7 @@ clean:
 	rm *.o nali
 
 install:
-	cp ./nali /usr/local/bin/nali
-	cp ./nali-update /usr/local/bin/nali-update
+	cp nali /usr/local/bin/nali
+	cp nali-update /usr/local/bin/nali-update
 	chmod a+x /usr/local/bin/nali /usr/local/bin/nali-update
 	/usr/local/bin/nali-update
