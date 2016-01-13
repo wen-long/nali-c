@@ -2,8 +2,6 @@
 qqwry_dat_url="http://update.cz88.net/soft/setup.zip";
 qqwry_dat_local_path="/usr/local/share/QQWry.Dat"
 curl=`which curl`
-wget=`which wget`
-
 
 workdir="/tmp/QQWry/"
 zipname="QQWry.setup.zip"
@@ -37,8 +35,12 @@ if [ "$neededcommands" !=  "" ]; then
 	exit 0;
 fi
 
-ismodified=`curl -s -I --header "If-Modified-Since: \`date -R  -u -r /usr/local/share/QQWry.Dat | sed 's/+0000/GMT/'\`" http://update.cz88.net/soft/setup.zip | grep "HTTP/1.1 304 Not Modified" | wc -l`
-if [ $ismodified = 1 ] ; then echo "No update needed" && exit 0; fi
+
+if test -w $qqwry_dat_local_path
+then
+    ismodified=`curl -s -I --header "If-Modified-Since: \`date -R  -u -r /usr/local/share/QQWry.Dat | sed 's/+0000/GMT/'\`" http://update.cz88.net/soft/setup.zip | grep "HTTP/1.1 304 Not Modified" | wc -l`
+    if [ $ismodified = 1 ] ; then echo "Data file is latest, No update needed" && exit 0; fi
+fi
 
 #todo, Find the right way to check the file is outdated or not
 
@@ -47,8 +49,13 @@ echo "Update needed"
 
 if ! test -w $qqwry_dat_local_path
 then
-    echo can not write to $qqwry_dat_local_path
-    exit 1
+    if ! touch "$qqwry_dat_local_path"
+      then
+      echo can not write to $qqwry_dat_local_path
+      exit 1
+    else
+      rm "$qqwry_dat_local_path"
+    fi
 fi
 
 mkdir $workdir
