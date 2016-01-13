@@ -1,11 +1,11 @@
 # nali-c
 A fast tool handles text stream and add ip geolocation info on it
 
-### Requirements
+### Build
 
 
-1. First download http://update.cz88.net/soft/setup.zip, extract the zip and exe (use innoextract), and put `QQWry.Dat` to `/usr/local/share/QQWry.Dat`
-2. Then `make && make install`
+1.`./configure && make && make install`    
+2. `nali-update`   
 
 nali-update need unzip and innoextract to extract zip and exe files
 
@@ -66,4 +66,5 @@ And any out put can be piped into nail-ng (super fast!)
 ``` 
 cat xxx.txt | nali
 sudo pdnsd-ctl dump | nali
+dnsmasq | nali
 ```
