@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/Users/wenlong/Documents/nali-c'
+ac_pwd='/Users/wenlong/nali-c'
 srcdir='.'
 INSTALL='/usr/local/opt/coreutils/libexec/gnubin/install -c'
 MKDIR_P='/usr/local/opt/coreutils/libexec/gnubin/mkdir -p'
@@ -653,12 +653,12 @@ S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/usr/local/opt/coreutils/libexec/gnubin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
-S["install_sh"]="${SHELL} /Users/wenlong/Documents/nali-c/install-sh"
-S["MAKEINFO"]="${SHELL} /Users/wenlong/Documents/nali-c/missing makeinfo"
-S["AUTOHEADER"]="${SHELL} /Users/wenlong/Documents/nali-c/missing autoheader"
-S["AUTOMAKE"]="${SHELL} /Users/wenlong/Documents/nali-c/missing automake-1.15"
-S["AUTOCONF"]="${SHELL} /Users/wenlong/Documents/nali-c/missing autoconf"
-S["ACLOCAL"]="${SHELL} /Users/wenlong/Documents/nali-c/missing aclocal-1.15"
+S["install_sh"]="${SHELL} /Users/wenlong/nali-c/install-sh"
+S["MAKEINFO"]="${SHELL} /Users/wenlong/nali-c/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /Users/wenlong/nali-c/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /Users/wenlong/nali-c/missing automake-1.15"
+S["AUTOCONF"]="${SHELL} /Users/wenlong/nali-c/missing autoconf"
+S["ACLOCAL"]="${SHELL} /Users/wenlong/nali-c/missing aclocal-1.15"
 S["VERSION"]="0.9.3"
 S["PACKAGE"]="nali-c"
 S["CYGPATH_W"]="echo"

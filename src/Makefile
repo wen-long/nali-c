@@ -16,6 +16,7 @@
 
 
 
+
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
     false; \
@@ -98,7 +99,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(datadir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_nali_OBJECTS = qqwry.$(OBJEXT) main.$(OBJEXT)
 nali_OBJECTS = $(am_nali_OBJECTS)
@@ -166,6 +168,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(data_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -187,12 +190,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /Users/wenlong/Documents/nali-c/missing aclocal-1.15
+ACLOCAL = ${SHELL} /Users/wenlong/nali-c/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /Users/wenlong/Documents/nali-c/missing autoconf
-AUTOHEADER = ${SHELL} /Users/wenlong/Documents/nali-c/missing autoheader
-AUTOMAKE = ${SHELL} /Users/wenlong/Documents/nali-c/missing automake-1.15
+AUTOCONF = ${SHELL} /Users/wenlong/nali-c/missing autoconf
+AUTOHEADER = ${SHELL} /Users/wenlong/nali-c/missing autoheader
+AUTOMAKE = ${SHELL} /Users/wenlong/nali-c/missing automake-1.15
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -217,7 +220,7 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = -liconv 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Users/wenlong/Documents/nali-c/missing makeinfo
+MAKEINFO = ${SHELL} /Users/wenlong/nali-c/missing makeinfo
 MKDIR_P = /usr/local/opt/coreutils/libexec/gnubin/mkdir -p
 OBJEXT = o
 PACKAGE = nali-c
@@ -232,10 +235,10 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = 
 VERSION = 0.9.3
-abs_builddir = /Users/wenlong/Documents/nali-c/src
-abs_srcdir = /Users/wenlong/Documents/nali-c/src
-abs_top_builddir = /Users/wenlong/Documents/nali-c
-abs_top_srcdir = /Users/wenlong/Documents/nali-c
+abs_builddir = /Users/wenlong/nali-c/src
+abs_srcdir = /Users/wenlong/nali-c/src
+abs_top_builddir = /Users/wenlong/nali-c
+abs_top_srcdir = /Users/wenlong/nali-c
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -245,7 +248,7 @@ am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
 build_alias = 
 builddir = .
-datadir = ${datarootdir}
+datadir = $(prefix)/share
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
@@ -254,7 +257,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/wenlong/Documents/nali-c/install-sh
+install_sh = ${SHELL} /Users/wenlong/nali-c/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -275,6 +278,7 @@ top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
 bin_SCRIPTS = nali-update
+data_DATA = QQWry.Dat
 nali_SOURCES = qqwry.c main.c
 all: all-am
 
@@ -413,6 +417,27 @@ include ./$(DEPDIR)/qqwry.Po
 #	$(AM_V_CC)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+install-dataDATA: $(data_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(data_DATA)'; test -n "$(datadir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(datadir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(datadir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(datadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(datadir)" || exit $$?; \
+	done
+
+uninstall-dataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(data_DATA)'; test -n "$(datadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(datadir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -498,9 +523,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS) $(SCRIPTS)
+all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(datadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -555,7 +580,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-dataDATA
 
 install-dvi: install-dvi-am
 
@@ -600,7 +625,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS
+uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	uninstall-dataDATA
 
 .MAKE: install-am install-strip
 
@@ -609,14 +635,15 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS
 	distclean distclean-compile distclean-generic distclean-tags \
 	distdir dvi dvi-am html html-am info info-am install \
 	install-am install-binPROGRAMS install-binSCRIPTS install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	install-data-am install-dataDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS
+	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	uninstall-dataDATA
 
 .PRECIOUS: Makefile
 

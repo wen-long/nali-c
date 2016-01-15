@@ -1,77 +1,89 @@
-#!/bin/sh
-qqwry_dat_url="http://update.cz88.net/soft/setup.zip";
-qqwry_dat_local_path="/usr/local/share/QQWry.Dat"
-curl=`which curl`
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-workdir="/tmp/QQWry/"
-zipname="QQWry.setup.zip"
-
-neededcommands=""
-
-if ! type "curl" &> /dev/null; then
-  neededcommands="$neededcommands curl"
-fi
-if ! type "date" &> /dev/null; then
-  neededcommands="$neededcommands date"
-fi
-if ! type "sed" &> /dev/null; then
-  neededcommands="$neededcommands sed"
-fi
-if ! type "grep" &> /dev/null; then
-  neededcommands="$neededcommands grep"
-fi
-if ! type "wc" &> /dev/null; then
-  neededcommands="$neededcommands wc"
-fi
-if ! type "unzip" &> /dev/null; then
-  neededcommands="$neededcommands unzip"
-fi
-if ! type "innoextract" &> /dev/null; then
-  neededcommands="$neededcommands innoextract"
-fi
-
-if [ "$neededcommands" !=  "" ]; then
-	echo "$neededcommands not found, please install!"
-	exit 0;
-fi
+import urllib.request
+import struct
+import zlib
+import datetime
+import os.path
+import hashlib
 
 
-if test -w $qqwry_dat_local_path
-then
-    ismodified=`curl -s -I --header "If-Modified-Since: \`date -R  -u -r /usr/local/share/QQWry.Dat | sed 's/+0000/GMT/'\`" http://update.cz88.net/soft/setup.zip | grep "HTTP/1.1 304 Not Modified" | wc -l`
-    if [ $ismodified = 1 ] ; then echo "Data file is latest, No update needed" && exit 0; fi
-fi
+qqwrypath = '/usr/local/share/QQWry.Dat'
+thisfile = os.path.abspath(__file__)
+md5hash = 'ae44341e56953b29529438968d8951a4'
 
-#todo, Find the right way to check the file is outdated or not
+#检查是否需要更新
+def check(newmd5):
+	global qqwrypath
+	global md5hash
 
-echo "Update needed"
+	needupdate = True
+	if os.path.exists(qqwrypath):
+		if newmd5 == md5hash:
+			needupdate = False
+
+	return needupdate
 
 
-if ! test -w $qqwry_dat_local_path
-then
-    if ! touch "$qqwry_dat_local_path"
-      then
-      echo can not write to $qqwry_dat_local_path
-      exit 1
-    else
-      rm "$qqwry_dat_local_path"
-    fi
-fi
+#更新本文件中的md5hash
+def updatemd5(newmd5):
+	global thisfile
 
-mkdir $workdir
+	print('Begin update md5sum......')
+	with open(thisfile) as f:
+		lines = f.readlines()
 
-command="$curl -k --compressed $qqwry_dat_url -o ${workdir}${zipname}"
+	for line in lines:
+		if line.startswith('md5hash'):
+			lines[lines.index(line)] = 'md5hash = \'{}\'\n'.format(newmd5)
+			break
 
-echo Updating $qqwry_dat_local_path
+	with open(thisfile, 'w') as f:
+		f.writelines(lines)
 
-$command
+	print('Update md5sum over')
 
-unzip -q -u  ${workdir}${zipname} -d ${workdir}
-innoextract -e ${workdir}setup.exe -d ${workdir}
-cp ${workdir}app/qqwry.dat $qqwry_dat_local_path
 
-#clean
-rm -r ${workdir}
+#更新QQWry.Dat
+def updateipdate(key):
+	global qqwrypath
 
-ls -alh "$qqwry_dat_local_path"
-exit 0
+	print('Begin update QQWry.Dat......')
+	with urllib.request.urlopen("http://update.cz88.net/ip/qqwry.rar") as f:
+		qqwry = f.read()
+
+	ciphertext = bytearray(qqwry[:0x200])
+
+	for i in range(0x200):
+		key = key * 0x805
+		key = key + 1
+		key = key & 0xFF
+		ciphertext[i] = qqwry[i] ^ key
+
+	qqwry = bytes(ciphertext) + qqwry[0x200:]
+	qqwry = zlib.decompress(qqwry)
+
+	with open(qqwrypath, 'wb') as filesave:
+		filesave.write(qqwry)
+
+	print('Update QQWry.Dat over, have a nive day')
+
+
+def main():
+	global md5hash
+
+	with urllib.request.urlopen("http://update.cz88.net/ip/copywrite.rar") as f:
+		copywrite = f.read()
+	key = struct.unpack('<L',copywrite[20:24])[0]   #解密需要的一个key
+	newmd5 = hashlib.md5(copywrite).hexdigest()   #服务器copywrite.rar的MD5
+
+	if check(newmd5):
+		print('New version found')        
+		updateipdate(key)
+		updatemd5(newmd5)
+	else:
+		print('Already latest version, are you ok?')
+
+if __name__ == '__main__':
+	main()
